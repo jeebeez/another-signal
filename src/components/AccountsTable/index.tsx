@@ -239,10 +239,9 @@ export function AccountsTable() {
         </div>
       )}
 
-      <MagicColumnSideSheet
-        open={isMagicColumnOpen}
-        onOpenChange={() => setIsMagicColumnOpen(false)}
-      />
+      {isMagicColumnOpen && (
+        <MagicColumnSideSheet onOpenChange={() => setIsMagicColumnOpen(false)} />
+      )}
     </div>
   )
 }

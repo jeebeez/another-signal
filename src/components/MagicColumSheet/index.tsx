@@ -11,14 +11,13 @@ import { toast } from 'sonner'
 import { useGenerateMagic } from '@/api/accounts'
 
 interface MagicColumnSideSheetProps {
-  open: boolean
   onOpenChange: (open: boolean) => void
 }
 
 /**
  * Side sheet component for adding a new magic column
  */
-export function MagicColumnSideSheet({ open, onOpenChange }: MagicColumnSideSheetProps) {
+export function MagicColumnSideSheet({ onOpenChange }: MagicColumnSideSheetProps) {
   const [question, setQuestion] = useState('')
 
   const { mutateAsync: generateMagic, isPending: isLoading } = useGenerateMagic()
@@ -56,7 +55,7 @@ export function MagicColumnSideSheet({ open, onOpenChange }: MagicColumnSideShee
 
   return (
     <Sheet
-      open={open}
+      open
       onOpenChange={onOpenChange}
       title="Add Magic Column"
       description="Create a new magic column based on your question and target field."
