@@ -1,12 +1,7 @@
-import axios, {
-  AxiosError,
-  AxiosInstance,
-  AxiosRequestConfig,
-  AxiosResponse
-} from "axios"
+import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios'
 
 // Environment variables
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api"
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api'
 const API_TIMEOUT = 30000 // 30 seconds timeout
 
 // Custom error interface
@@ -27,15 +22,15 @@ class Api {
     baseURL: API_URL,
     timeout: API_TIMEOUT,
     headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json"
-    }
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    },
   }
 
   constructor(config?: AxiosRequestConfig) {
     this.instance = axios.create({
       ...this.defaultConfig,
-      ...config
+      ...config,
     })
 
     this.setupInterceptors()
@@ -44,7 +39,7 @@ class Api {
   private setupInterceptors() {
     // Request interceptor
     this.instance.interceptors.request.use(
-      async config => {
+      async (config) => {
         // If we're already passing Authorization header, use that
         if (config.headers.Authorization) {
           return config
@@ -54,7 +49,7 @@ class Api {
 
         return config
       },
-      error => Promise.reject(error)
+      (error) => Promise.reject(error)
     )
 
     // Response interceptor
@@ -63,27 +58,26 @@ class Api {
       (error: AxiosError) => {
         const { response } = error
         const errorData = response?.data as ApiError | undefined
+        let errorMessage = 'An unexpected error occurred'
 
         // Handle different error statuses with more specific messages
         if (response) {
-          let errorMessage = "An unexpected error occurred"
-
           // Authentication errors
           if (response.status === 401) {
-            errorMessage = "Authentication required. Please log in again."
+            errorMessage = 'Authentication required. Please log in again.'
             // You could redirect to login here if needed
           }
           // Not found errors
           else if (response.status === 404) {
-            errorMessage = "Resource not found"
+            errorMessage = 'Resource not found'
           }
           // Validation errors
           else if (response.status === 422) {
-            errorMessage = "Validation error"
+            errorMessage = 'Validation error'
           }
           // Server errors
           else if (response.status >= 500) {
-            errorMessage = "Server error. Please try again later"
+            errorMessage = 'Server error. Please try again later'
           }
 
           // Use error message from response if available
@@ -94,7 +88,7 @@ class Api {
           // Network error or server is down
         }
 
-        return Promise.reject(error)
+        return Promise.reject({ ...error, message: errorMessage })
       }
     )
   }
